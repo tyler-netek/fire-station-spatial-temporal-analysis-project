@@ -1,0 +1,42 @@
+---
+title: "Data Cleaning for Economic Dataset"
+author: "Madeleine Ward"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This script processes economic data for New York City. It cleans the data from the American Community Survey (ACS), filters for NYC ZIP codes, standardizes column names, adjusts data types, and exports the cleaned data frame as a CSV file.
+
+To download the raw data, visit the [data.census.gov](https://data.census.gov/table?q=median+income&g=040XX00US36$8600000 "ACS table") website.
+
+### Requirements 
+
+-   R (Version 4.0 or later recommended)
+-   The following R packages:
+    -   `tidyverse`
+
+### Setup
+
+1.  Download the required CSV files:
+
+    -   Data file: `ACSST5Y2023.S1901-Data.csv`
+
+    -   Metadata file: `ACSST5Y2023.S1901-Column-Metadata.csv`
+
+2.  Install the required package in R:
+
+    ```         
+    install.packages("tidyverse")
+    ```
+
+### Usage
+
+1.  Place the CSV files in the same directory as the script. Ensure the script is set to run in the directory where it is stored.
+
+2.  Run the script in your R environment:
+
+    ```         
+    source("dataCleanEconomic.R")
+    ```
+
+3.  The cleaned dataset will be saved as `nyc_economic_data.csv` in the same directory.
