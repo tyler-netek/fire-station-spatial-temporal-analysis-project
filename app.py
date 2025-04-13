@@ -161,9 +161,6 @@ st.sidebar.info(f"Last Refresh: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 if selected_page == "Welcome":
     st.header("Welcome")
     st.markdown("""
-                
-    TESTING DEPLOY
-
     This application provides an interactive interface for our CSE6242 project regarding NYC \U0001F5FD fire station analysis.
     We investigated:
     * Spatial and temporal patterns of fire incidents.
