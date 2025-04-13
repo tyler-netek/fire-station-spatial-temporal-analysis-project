@@ -17,6 +17,7 @@ deap = "*"
 plotly = "*"
 matplotlib = "*"
 cartopy = "*"
+tensorflow = "*"
 
 
 [dev-packages]
