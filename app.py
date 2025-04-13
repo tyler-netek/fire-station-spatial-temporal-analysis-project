@@ -9,7 +9,6 @@ from itertools import product
 import plotly.express as px
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
-# from cartopy.feature import ShapelyFeature # May not be needed directly if just using st.image
 import cartopy.feature as cfeature
 
 OPTIMIZATION_DATA_DIR = os.path.join(".", "Optimization", "Data")
@@ -17,17 +16,18 @@ PREDICTION_DATA_DIR = os.path.join(".", "Prediction", "Data")
 PREDICTION_MODEL_DIR = os.path.join(".", "Prediction", "Models")
 VISUALIZATIONS_DIR = os.path.join(".", "Visualizations")
 OPTIMIZATION_VIS_DIR = os.path.join(".", "Optimization")
-WAVELET_FEATURES_PATH = os.path.join(".", "Prediction", "Data", "wavelet_features.csv") # Make sure this path is right!
+WAVELET_FEATURES_PATH = os.path.join(".", "Prediction", "wavelet_features.csv")
+
 
 @st.cache_data
 def load_csv(file_path):
     if not os.path.exists(file_path):
-        st.warning(f"Uh oh, couldn't find {file_path}. Skipping.")
+        st.warning(f"Data file missing: {file_path}. App might lack some features.")
         return None
     try:
         return pd.read_csv(file_path)
     except Exception as e:
-        st.error(f"Problem loading {file_path}: {e}")
+        st.error(f"Couldn't load {file_path}: {e}")
         return None
 
 @st.cache_resource
@@ -37,7 +37,6 @@ def load_pkl_model(model_path):
         return None
     try:
         model = joblib.load(model_path)
-        # Try to grab expected feature names for later
         if hasattr(model, 'feature_names_in_'):
             st.session_state[f'{os.path.basename(model_path)}_features'] = model.feature_names_in_
         return model
@@ -51,7 +50,6 @@ def load_keras_model(model_path):
         st.warning(f"Model file missing: {model_path}.")
         return None
     try:
-        # Give user feedback since this can take a sec
         with st.spinner(f'Loading DNN model ({os.path.basename(model_path)})...'):
             model = load_model(model_path)
         return model
@@ -65,9 +63,12 @@ wavelet_features_unique = None
 available_zips = []
 if wavelet_df is not None:
     wavelet_features_unique = wavelet_df.drop_duplicates(subset=['MODZCTA']).copy()
-    available_zips = sorted(wavelet_features_unique['MODZCTA'].astype(int).unique())
+    if 'MODZCTA' in wavelet_features_unique.columns:
+        available_zips = sorted(wavelet_features_unique['MODZCTA'].astype(int).unique())
+    else:
+        st.error("MODZCTA column not found in wavelet features file!")
 else:
-     st.error("Fatal: Wavelet features file is missing. Predictions won't work.")
+     st.error(f"Fatal: Wavelet features file ({WAVELET_FEATURES_PATH}) is missing. Predictions won't work.")
 
 
 fire_inc_data_path = os.path.join(".", "Final_Fire_Incidence_Data_with_PopDensity.csv")
@@ -92,6 +93,7 @@ opt_loc_path = os.path.join(OPTIMIZATION_DATA_DIR, "optimal_ga_locations.csv")
 potential_locs_df = load_csv(pot_loc_path)
 optimal_locs_df = load_csv(opt_loc_path)
 
+
 kde_map_path = os.path.join(OPTIMIZATION_VIS_DIR, "kde_potential_stations_map.png")
 
 
@@ -109,7 +111,7 @@ def prep_data_for_prediction(zipcode, month, day, hour, wavelet_feats):
     merged_input = pd.merge(input_row_dummies, wavelet_feats, on='MODZCTA', how='left')
 
     if merged_input.empty or merged_input.isnull().values.any():
-         st.error(f"Couldn't find wavelet features for Zip {zipcode}?")
+         st.error(f"Couldn't find wavelet features for Zip {zipcode}? Check input file.")
          return None
 
     processed_input = merged_input.drop('MODZCTA', axis=1)
@@ -121,12 +123,12 @@ def prep_data_for_prediction(zipcode, month, day, hour, wavelet_feats):
             if col not in processed_input.columns:
                 processed_input[col] = 0
         try:
-            processed_input = processed_input[model_cols] # ensure exact order and columns
+            processed_input = processed_input[model_cols]
         except KeyError as e:
-            st.error(f"Weird column mismatch: {e}. Maybe check training features?")
+            st.error(f"Column mismatch error: {e}. Model expected different features than generated.")
             return None
     else:
-        st.error("Can't find the expected feature list from the model... uh oh.")
+        st.error("Can't find the expected feature list from the loaded model. Cannot proceed.")
         return None
 
     return processed_input
@@ -140,7 +142,7 @@ current_section = st.sidebar.selectbox(
     "Section:",
     ["Welcome", "Explore Data", "Predict Risk", "Optimization", "Visualizations"]
 )
-st.sidebar.info(f"Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+st.sidebar.info(f"Last Refresh: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
 if current_section == "Welcome":
@@ -154,24 +156,25 @@ if current_section == "Welcome":
 
     Use the sidebar to poke around the different parts.
     """)
-
+    st.info("Team 139: Tyler, Vinuka, Harshitha, Rishi, Madeleine, Kevin")
 
 elif current_section == "Explore Data":
     st.header("A Peek at the Data")
+    st.write("Quick samples of the data used.")
 
     st.subheader("Fire Incidents (Snapshot)")
     if fire_inc_df is not None:
         st.dataframe(fire_inc_df.sample(min(5, len(fire_inc_df))))
-        st.caption(f"Total rows: {len(fire_inc_df)}")
+        st.caption(f"Loaded {len(fire_inc_df)} rows.")
     else:
         st.warning("Couldn't load the main fire incidence data.")
 
     st.subheader("Wavelet Features (Sample)")
     if wavelet_df is not None:
         st.dataframe(wavelet_df.head())
-        st.caption(f"Total rows: {len(wavelet_df)}")
+        st.caption(f"Loaded {len(wavelet_df)} rows from {WAVELET_FEATURES_PATH}.")
     else:
-        st.warning("Couldn't load wavelet features data.")
+        st.warning(f"Couldn't load wavelet features data from {WAVELET_FEATURES_PATH}.")
 
 
 elif current_section == "Predict Risk":
@@ -181,18 +184,19 @@ elif current_section == "Predict Risk":
     if wavelet_features_unique is None:
         st.error("Need the wavelet features data to make predictions!")
     else:
-        r1_col1, r1_col2 = st.columns(2)
-        r2_col1, r2_col2 = st.columns(2)
-        with r1_col1:
-            zip_input = st.selectbox("Choose Zip Code (MODZCTA):", available_zips)
-        with r1_col2:
-            month_input = st.selectbox("Month:", list(range(1, 13)))
-        with r2_col1:
-            day_input = st.number_input("Day:", min_value=1, max_value=31, value=15)
-        with r2_col2:
-            hour_input = st.number_input("Hour (0-23):", min_value=0, max_value=23, value=14)
+        col1, col2 = st.columns(2)
+        col3, col4 = st.columns(2)
 
-        predict_button = st.button("Let's Predict!")
+        with col1:
+            zip_input = st.selectbox("Zip Code (MODZCTA):", available_zips)
+        with col2:
+            month_input = st.selectbox("Month:", list(range(1, 13)), index=3)
+        with col3:
+            day_input = st.number_input("Day:", min_value=1, max_value=31, value=13)
+        with col4:
+            hour_input = st.number_input("Hour (0-23):", min_value=0, max_value=23, value=15)
+
+        predict_button = st.button("Run Prediction")
 
         if predict_button:
             input_ready = prep_data_for_prediction(zip_input, month_input, day_input, hour_input, wavelet_features_unique)
@@ -200,17 +204,26 @@ elif current_section == "Predict Risk":
             st.subheader("Prediction Results")
             if input_ready is not None:
                 predictions = {}
-                if any_risk_model: predictions["Any Risk"] = any_risk_model.predict_proba(input_ready)[0, 1]
-                if high_risk_model: predictions["High Risk"] = high_risk_model.predict_proba(input_ready)[0, 1]
-                if med_risk_model: predictions["Medium Risk"] = med_risk_model.predict_proba(input_ready)[0, 1]
-                if low_risk_model: predictions["Low Risk"] = low_risk_model.predict_proba(input_ready)[0, 1]
+                try:
+                    if any_risk_model: predictions["Any Risk Prob."] = any_risk_model.predict_proba(input_ready)[0, 1]
+                except Exception as e: st.error(f"Any Risk Model Error: {e}")
+                try:
+                    if high_risk_model: predictions["High Risk Prob."] = high_risk_model.predict_proba(input_ready)[0, 1]
+                except Exception as e: st.error(f"High Risk Model Error: {e}")
+                try:
+                    if med_risk_model: predictions["Medium Risk Prob."] = med_risk_model.predict_proba(input_ready)[0, 1]
+                except Exception as e: st.error(f"Medium Risk Model Error: {e}")
+                try:
+                    if low_risk_model: predictions["Low Risk Prob."] = low_risk_model.predict_proba(input_ready)[0, 1]
+                except Exception as e: st.error(f"Low Risk Model Error: {e}")
+
 
                 if predictions:
-                    st.write(f"For MODZCTA `{zip_input}` on `{month_input}/{day_input}` around hour `{hour_input}`:")
+                    st.success(f"Predictions for MODZCTA `{zip_input}` on `{month_input}/{day_input}` around hour `{hour_input}`:")
                     pred_results_df = pd.DataFrame([predictions])
                     st.dataframe(pred_results_df.style.format("{:.4f}"))
                 else:
-                    st.warning("None of the logistic models seem to be loaded.")
+                    st.warning("No logistic models loaded or prediction failed.")
             else:
                 st.error("Couldn't prepare data for prediction based on input.")
 
@@ -219,40 +232,40 @@ elif current_section == "Predict Risk":
         if dnn_keras_model is None:
             st.info("DNN model (.keras file) wasn't loaded.")
         else:
-            st.info("DNN model prediction would need its own specific input setup here.")
+            st.info("DNN prediction uses different input features (demographic, economic etc.) and requires separate UI and preprocessing logic (not implemented here).")
 
 
 elif current_section == "Optimization":
     st.header("Finding Better Fire Station Spots")
-    st.markdown("Here are the results from our optimization work.")
+    st.markdown("Results from offline KDE, K-Medoids, and Genetic Algorithm runs.")
 
     tab_kmed, tab_ga, tab_kde_viz = st.tabs(["Candidates", "GA Optimal", "KDE Map"])
 
     with tab_kmed:
-        st.subheader("Candidate Locations (from KDE/K-Medoids)")
-        st.write("These 15 spots were picked from high-risk areas identified using KDE and then clustered.")
+        st.subheader("Candidate Potential Locations")
+        st.write("These 15 potential spots were shortlisted from high-risk vacant lots.")
         if potential_locs_df is not None:
             st.dataframe(potential_locs_df)
             if 'longitude' in potential_locs_df.columns and 'latitude' in potential_locs_df.columns:
                  map_df = potential_locs_df[['latitude', 'longitude']].dropna().rename(columns={'latitude':'lat', 'longitude':'lon'})
                  if not map_df.empty: st.map(map_df, zoom=10)
         else:
-            st.warning("Missing the potential locations data.")
+            st.warning(f"Missing the potential locations CSV from `{pot_loc_path}`.")
 
     with tab_ga:
         st.subheader("Optimal Locations (from Genetic Algorithm)")
-        st.write("The GA tried to find the best 2 new spots based on risk coverage (run offline).")
+        st.write("The GA picked these 2 spots as the best additions based on coverage.")
         if optimal_locs_df is not None:
             st.dataframe(optimal_locs_df)
             if 'longitude' in optimal_locs_df.columns and 'latitude' in optimal_locs_df.columns:
                  map_df = optimal_locs_df[['latitude', 'longitude']].dropna().rename(columns={'latitude':'lat', 'longitude':'lon'})
                  if not map_df.empty: st.map(map_df, zoom=10)
         else:
-            st.warning("Missing the GA results data. Need to run `Optimization/Genetic_algo_final.py` and save output.")
+            st.warning(f"Missing the GA results CSV from `{opt_loc_path}`. Run the script first!")
 
     with tab_kde_viz:
         st.subheader("KDE Fire Risk Map")
-        st.write("Shows the calculated fire risk density and the 15 candidate spots.")
+        st.write("Shows calculated fire risk density and the 15 candidates.")
         if os.path.exists(kde_map_path):
             st.image(kde_map_path, caption="KDE Risk + Candidate Locations (Generated Offline)", use_column_width=True)
         else:
