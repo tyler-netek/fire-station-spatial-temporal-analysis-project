@@ -11,7 +11,7 @@ This project is for GT's Data and Visual Analytics class (Spring 2025). We looke
 
 Check out the interactive dashboard deployed on Render!
 
-`URL to APP`
+[https://fire-station-spatial-temporal-analysis.onrender.com](https://fire-station-spatial-temporal-analysis.onrender.com)
 
 (The free app might take a minute to wake up if it hasn't been used recently.)
 
