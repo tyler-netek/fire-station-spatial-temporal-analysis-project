@@ -1,7 +1,7 @@
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi
+name = "pypi"
 
 [packages]
 streamlit = "*"
@@ -9,13 +9,11 @@ pandas = "*"
 numpy = "*"
 scikit-learn = "*"
 joblib = "*"
-tensorflow-cpu = "*"
 requests = "*"
 openpyxl = "*"
 geopandas = "*"
 shapely = "*"
 deap = "*"
-sklearn-extra = "*"
 plotly = "*"
 matplotlib = "*"
 cartopy = "*"
@@ -25,7 +23,7 @@ cartopy = "*"
 
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"
 
 
 [pipenv]
