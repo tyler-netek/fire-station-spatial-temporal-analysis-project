@@ -45,22 +45,6 @@ Python 3.11, Streamlit, Pandas, Scikit-learn, TensorFlow/Keras, Geopandas, DEAP,
    ```
    (Uses `Pipfile.lock`. Can take a while.)
 
-**4. Data Files:**
-   * Most data/models should be in the repo. Make sure `Prediction/wavelet_features.csv` is present.
-   * **PLUTO Data:** The KDE notebook needs `pluto_25v1.csv`. Download it from NYC Planning ([Link Needed!]) and put it in `Optimization/Data/`.
-
-**5. Run Offline Stuff (Required!):**
-   The app needs results *from* these. Run them first inside the environment (`pipenv shell`).
-   * **Generate GA Results:**
-      ```bash
-      python Optimization/Genetic_algo_final.py
-      ```
-      (This needs to save output to `Optimization/Data/optimal_ga_locations.csv`. Add the `.to_csv()` line to the python script if needed.)
-   * **Generate KDE Map Image:**
-      * Run the `Optimization/KDE+ New Fire Station Locations(K Medoids).ipynb` notebook.
-      * Make sure it saves the KDE map plot as `Optimization/kde_potential_stations_map.png`.
-   * Type `exit` when done.
-
 **6. Run the App:**
    ```bash
    pipenv shell

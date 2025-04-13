@@ -4,10 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-streamlit = "*"
 pandas = "*"
+numpy = "*"
 scikit-learn = "*"
 joblib = "*"
+tensorflow = "*"
 requests = "*"
 openpyxl = "*"
 geopandas = "*"
@@ -16,8 +17,8 @@ deap = "*"
 plotly = "*"
 matplotlib = "*"
 cartopy = "*"
-tensorflow = "*"
-numpy = "*"
+PyWavelets = "*"
+streamlit = "*"
 
 [dev-packages]
 

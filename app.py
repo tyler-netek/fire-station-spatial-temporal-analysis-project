@@ -97,6 +97,7 @@ optimal_locs_df = load_csv(opt_loc_path)
 
 
 kde_map_path = os.path.join(OPTIMIZATION_VIS_DIR, "kde_potential_stations_map.png")
+dnn_perf_plot_path = os.path.join(PREDICTION_MODEL_DIR, "dnn_performance_scatter.png")
 
 
 def prep_data_for_prediction(zipcode, month, day, hour, wavelet_feats):
@@ -274,46 +275,92 @@ elif current_section == "Optimization":
 
 
 elif current_section == "Visualizations":
-    st.header("Some Extra Plots")
+    st.header("Project Visualizations Dashboard")
 
-    st.subheader("Incident Counts by Zip (Top 30)")
-    if fire_inc_df is not None and 'MODZCTA' in fire_inc_df.columns:
-        try:
-            counts = fire_inc_df['MODZCTA'].value_counts().reset_index().head(30)
-            counts.columns = ['MODZCTA', 'Count']
-            counts['MODZCTA'] = counts['MODZCTA'].astype(str)
-            fig = px.bar(counts, x='MODZCTA', y='Count', title='Top 30 Zip Codes by Incident Count')
-            st.plotly_chart(fig, use_container_width=True)
-        except Exception as e:
-            st.error(f"Couldn't make the histogram: {e}")
-    else:
-        st.warning("Need fire incidence data with 'MODZCTA' column for this plot.")
+    viz_tab1, viz_tab2, viz_tab3, viz_tab4 = st.tabs([
+        "Incident Counts", "Location Map", "Wavelet Features", "DNN Performance"
+    ])
 
-    st.subheader("Map of Candidate vs Optimal Stations")
-    if potential_locs_df is not None and optimal_locs_df is not None:
-         if ('longitude' in potential_locs_df.columns and 'latitude' in potential_locs_df.columns and
-             'longitude' in optimal_locs_df.columns and 'latitude' in optimal_locs_df.columns):
+    with viz_tab1:
+        st.subheader("Incident Counts by Zip (Top 30)")
+        if fire_inc_df is not None and 'MODZCTA' in fire_inc_df.columns:
             try:
-                pdf = potential_locs_df.copy()
-                odf = optimal_locs_df.copy()
-                pdf['Type'] = 'Candidate (KDE/KMedoids)'
-                odf['Type'] = 'Optimal (GA)'
-                combined_df = pd.concat([
-                    pdf[['latitude', 'longitude', 'Type']],
-                    odf[['latitude', 'longitude', 'Type']]
-                ], ignore_index=True).dropna()
-
-                fig_map = px.scatter_mapbox(combined_df,
-                                            lat="latitude", lon="longitude", color="Type",
-                                            title="Candidate vs Optimal Locations",
-                                            mapbox_style="carto-positron", zoom=9.5,
-                                            center={"lat": 40.7128, "lon": -74.0060},
-                                            opacity=0.8, size_max=10)
-                fig_map.update_layout(margin={"r":0,"t":50,"l":0,"b":0}, legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
-                st.plotly_chart(fig_map, use_container_width=True)
+                counts = fire_inc_df['MODZCTA'].value_counts().reset_index().head(30)
+                counts.columns = ['MODZCTA', 'Count']
+                counts['MODZCTA'] = counts['MODZCTA'].astype(str)
+                fig_hist = px.bar(counts, x='MODZCTA', y='Count', title='Top 30 Zip Codes by Incident Count')
+                st.plotly_chart(fig_hist, use_container_width=True)
             except Exception as e:
-                st.error(f"Couldn't make the location map: {e}")
-         else:
-             st.warning("Missing lat/lon data for mapping.")
-    else:
-        st.warning("Need both potential and optimal location data loaded for this map.")
+                st.error(f"Couldn't make the histogram: {e}")
+        else:
+            st.warning("Need fire incidence data with 'MODZCTA' column for this plot.")
+
+    with viz_tab2:
+        st.subheader("Map of Candidate vs Optimal Stations")
+        if potential_locs_df is not None and optimal_locs_df is not None:
+             if ('longitude' in potential_locs_df.columns and 'latitude' in potential_locs_df.columns and
+                 'longitude' in optimal_locs_df.columns and 'latitude' in optimal_locs_df.columns):
+                try:
+                    pdf = potential_locs_df.copy()
+                    odf = optimal_locs_df.copy()
+                    pdf['Type'] = 'Candidate (KDE/KMedoids)'
+                    odf['Type'] = 'Optimal (GA)'
+                    combined_df = pd.concat([
+                        pdf[['latitude', 'longitude', 'Type']],
+                        odf[['latitude', 'longitude', 'Type']]
+                    ], ignore_index=True).dropna()
+
+                    fig_map = px.scatter_mapbox(combined_df,
+                                                lat="latitude", lon="longitude", color="Type",
+                                                title="Candidate vs Optimal Locations",
+                                                mapbox_style="carto-positron", zoom=9.5,
+                                                center={"lat": 40.7128, "lon": -74.0060},
+                                                opacity=0.8, size_max=10)
+                    fig_map.update_layout(margin={"r":0,"t":50,"l":0,"b":0}, legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
+                    st.plotly_chart(fig_map, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Couldn't make the location map: {e}")
+             else:
+                 st.warning("Missing lat/lon data for mapping.")
+        else:
+            st.warning("Need both potential and optimal location data loaded for this map.")
+
+    with viz_tab3:
+        st.subheader("Wavelet Feature Distributions")
+        if wavelet_df is not None:
+            try:
+                wavelet_cols = [col for col in wavelet_df.columns if col not in ['MODZCTA']]
+                if wavelet_cols:
+                    fig_wavelet, axes = plt.subplots(3, 3, figsize=(12, 10))
+                    axes = axes.ravel()
+                    cols_to_plot = wavelet_cols[:len(axes)]
+                    for i, col in enumerate(cols_to_plot):
+                        axes[i].hist(wavelet_df[col].dropna(), bins=20)
+                        axes[i].set_title(col, fontsize=10)
+                        axes[i].tick_params(axis='x', rotation=30, labelsize=8)
+                        axes[i].tick_params(axis='y', labelsize=8)
+
+                    for i in range(len(cols_to_plot), len(axes)):
+                        axes[i].set_visible(False)
+
+                    plt.tight_layout(pad=2.0)
+                    st.pyplot(fig_wavelet)
+                    plt.close(fig_wavelet) # Close figure to free memory
+                else:
+                    st.warning("No wavelet feature columns found to plot.")
+
+            except Exception as e:
+                st.error(f"Could not generate wavelet histograms: {e}")
+        else:
+            st.warning("Wavelet features data not loaded.")
+
+    with viz_tab4:
+        st.subheader("DNN Model Performance (Actual vs. Predicted)")
+        st.write("This plot shows performance on the test set for the DNN model predicting weighted incident counts (generated offline).")
+        if os.path.exists(dnn_perf_plot_path):
+             st.image(dnn_perf_plot_path, caption="DNN Actual vs. Predicted Weighted Incidents", use_column_width=True)
+        else:
+             st.warning(f"DNN performance plot not found at `{dnn_perf_plot_path}`. Generate and save it from the model development notebook.")
+
+        st.info("Note: The DNN uses different features (demographic, economic, etc.) than the logistic models shown in the 'Predict Risk' tab.")
+        
