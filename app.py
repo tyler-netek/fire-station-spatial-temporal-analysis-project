@@ -25,6 +25,10 @@ POTENTIAL_LOC_FILE = os.path.join(OPTIMIZATION_DATA_DIR, "Potential_location.csv
 OPTIMAL_LOC_FILE = os.path.join(OPTIMIZATION_DATA_DIR, "optimal_ga_locations.csv")
 BUILDING_RISK_FILE = os.path.join(PREDICTION_DATA_DIR, "building_fire_risk.csv")
 
+PBI_IMG1_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_main_dashboard.png")
+PBI_IMG2_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_risk_map.png")
+PBI_IMG3_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_trends_chart.png")
+
 
 @st.cache_data
 def load_csv(file_path):
@@ -143,7 +147,7 @@ def prep_data_for_prediction(zipcode, month, day, hour, wavelet_features):
     return processed_df_prep
 
 
-st.title("🚒 NYC Fire Station Analysis")
+st.title("\U0001F692 NYC Fire Station Spatial-Temporal Analysis \U0001F5FD")
 
 
 st.sidebar.header("Select View")
@@ -157,14 +161,16 @@ st.sidebar.info(f"Last Refresh: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 if selected_page == "Welcome":
     st.header("Welcome")
     st.markdown("""
-    This application provides an interactive interface for our CSE6242 project regarding NYC fire station analysis.
+    This application provides an interactive interface for our CSE6242 project regarding NYC \U0001F5FD fire station analysis.
     We investigated:
     * Spatial and temporal patterns of fire incidents.
     * Predictive modeling of fire risk using wavelet-based time-series features.
     * Optimization of potential new fire station locations using KDE and Genetic Algorithm techniques.
 
-    Please use the sidebar to navigate the analysis sections.
+    Please use the sidebar to navigate the analysis sections.        
     """)
+    st.caption("cool CS fact: emojis like 🚒 and 🗽 have unique hexadecimal codes (unicode points) behind the scenes - the statue of liberty is U+1F5FD!")
+
     st.info("Team 139: Tyler, Vinuka, Harshitha, Rishi, Madeleine, Kevin")
 
 
@@ -340,5 +346,30 @@ elif selected_page == "Visualizations":
         st.warning("need both potential and optimal location data loaded for this map.")
 
     st.divider()
-    st.subheader("Add Custom Visualizations")
-    st.info("this section is available for adding further project visualizations by editing the script.")
+
+    st.subheader("Key Dashboards (from Power BI)")
+    st.write("static representations of visuals originally created in power bi.")
+
+    img_col1, img_col2 = st.columns(2)
+
+    with img_col1:
+        if os.path.exists( PBI_IMG1_PATH ):
+            st.image( PBI_IMG1_PATH, caption="dashboard overview (screenshot)", use_column_width=True)
+        else:
+            st.warning(f"image file not found: `{PBI_IMG1_PATH}`. (add screenshot).")
+
+    with img_col2:
+        if os.path.exists( PBI_IMG2_PATH ):
+            st.image( PBI_IMG2_PATH, caption="risk map visual (screenshot)", use_column_width=True)
+        else:
+            st.warning(f"image file not found: `{PBI_IMG2_PATH}`. (add screenshot).")
+
+
+    if os.path.exists( PBI_IMG3_PATH ):
+         st.image( PBI_IMG3_PATH, caption="trends chart (screenshot)", use_column_width=True)
+    else:
+         st.warning(f"image file not found: `{PBI_IMG3_PATH}`. (add screenshot).")
+
+    st.divider()
+    st.subheader("Add Other Custom Visualizations")
+    st.info("this section can be further developed with additional plots relevant to the project.")
