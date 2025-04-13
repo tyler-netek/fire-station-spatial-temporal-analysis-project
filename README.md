@@ -1,5 +1,3 @@
-# TESTING AUTO DEPLOY
-
 # NYC Fire Station Spatial-Temporal Analysis - CSE6242 Project
 
 **Team:** Team 139
