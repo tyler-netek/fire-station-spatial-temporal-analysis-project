@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
+st.set_page_config(layout="wide", page_title="NYC Fire Risk")
+
 OPTIMIZATION_DATA_DIR = os.path.join(".", "Optimization", "Data")
 PREDICTION_DATA_DIR = os.path.join(".", "Prediction", "Data")
 PREDICTION_MODEL_DIR = os.path.join(".", "Prediction", "Models")
@@ -134,7 +136,6 @@ def prep_data_for_prediction(zipcode, month, day, hour, wavelet_feats):
     return processed_input
 
 
-st.set_page_config(layout="wide", page_title="NYC Fire Risk")
 st.title("🚒 NYC Fire Station Analysis")
 
 st.sidebar.header("Select View")

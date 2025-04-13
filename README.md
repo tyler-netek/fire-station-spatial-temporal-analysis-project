@@ -24,12 +24,12 @@ Check out the interactive dashboard deployed on Render!
 
 ## Tech We Used
 
-Python 3.9, Streamlit, Pandas, Scikit-learn, TensorFlow/Keras, Geopandas, DEAP, Pipenv, Render, and others.
+Python 3.11, Streamlit, Pandas, Scikit-learn, TensorFlow/Keras, Geopandas, DEAP, Pipenv, Render, and others.
 
 ## Getting it Running Locally
 
 **1. Get Ready:**
-   * Need Git and Python 3.9 (added to PATH).
+   * Need Git and Python 3.11 (added to PATH).
    * Install Pipenv: `pip install pipenv`.
    * Might need system libraries for `geopandas`/`cartopy` if install fails (GDAL, PROJ, GEOS - check their docs for your OS).
 
