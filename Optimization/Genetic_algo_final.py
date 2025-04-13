@@ -4,6 +4,7 @@ import pandas as pd
 import geopandas as gpd
 from shapely import wkt
 from shapely.ops import unary_union
+import os
 
 try:
     from shapely.ops import union_all
@@ -27,7 +28,7 @@ RADIUS_OUTER = 1500
 VERBOSE = True
 
 # Load baseline data
-baseline_csv = "all_zip_full_buffer_coverage_with_overlap.csv"
+baseline_csv = "Optimization/Data/all_zip_full_buffer_coverage_with_overlap.csv"
 df_baseline = pd.read_csv(baseline_csv)
 
 df_baseline["baseline_score"] = (
@@ -39,7 +40,7 @@ df_baseline["baseline_score"] = (
 baseline_dict = dict(zip(df_baseline["MODZCTA"], df_baseline["baseline_score"]))
 
 # Load risk data
-risk_csv = "Merged_Risk_PopDensity_SquareKilometers.csv"
+risk_csv = "Optimization/Data/Merged_Risk_PopDensity_SquareKilometers.csv"
 risk_df = pd.read_csv(risk_csv)
 
 risk_df["geometry"] = risk_df["the_geom"].apply(wkt.loads)
@@ -65,7 +66,7 @@ def compute_FRpi(row):
 gdf_risk["FRpi"] = gdf_risk.apply(compute_FRpi, axis=1)
 
 # Load potential new station locations
-pot_df = pd.read_csv("Potential_location.csv")
+pot_df = pd.read_csv("Optimization/Data/Potential_location.csv")
 gdf_pot = gpd.GeoDataFrame(
     pot_df,
     geometry=gpd.points_from_xy(pot_df.longitude, pot_df.latitude),
@@ -237,6 +238,9 @@ def main():
     result_df = result_df[["incidi", "latitude", "longitude"]]
     print("\nResult DataFrame:")
     print(result_df)
+    output_path = os.path.join("Optimization", "Data", "optimal_ga_locations.csv") # Define path relative to script location
+    result_df.to_csv(output_path, index=False)
+    print(f"\nSaved optimal locations to {output_path}")
 
     return global_best, result_df
 

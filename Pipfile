@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 streamlit = "*"
 pandas = "*"
-numpy = "*"
 scikit-learn = "*"
 joblib = "*"
 requests = "*"
@@ -18,13 +17,11 @@ plotly = "*"
 matplotlib = "*"
 cartopy = "*"
 tensorflow = "*"
-
+numpy = "*"
 
 [dev-packages]
 
-
 [requires]
 python_version = "3.11"
-
 
 [pipenv]
