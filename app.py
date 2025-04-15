@@ -28,10 +28,8 @@ DEMO_DATA_PATH = os.path.join(PREDICTION_DATA_DIR, "nyc_demographic_data.csv")
 ECO_DATA_PATH = os.path.join(PREDICTION_DATA_DIR, "nyc_economic_data.csv")
 FDNY_STATIONS_PATH = os.path.join(VISUALIZATIONS_PATH, "FDNY_Firehouse_Listing_20250312.csv")
 KDE_ZIP_OUTPUT_PATH = os.path.join(OPTIMIZATION_DATA_DIR, "kde_by_zipcode.csv")
+PBI_ZIP_PATH = os.path.join(VISUALIZATIONS_PATH, "Team_139_PBI_Visualization.zip")
 
-PBI_IMG1_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_main_dashboard.png")
-PBI_IMG2_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_risk_map.png")
-PBI_IMG3_PATH = os.path.join(VISUALIZATIONS_PATH, "powerbi_trends_chart.png")
 
 EXPECTED_LOGISTIC_FEATURES = [
     'high_mean_energy', 'high_max_energy', 'high_dominant_scale',
@@ -143,7 +141,7 @@ if 'explore_last_loaded_df' not in st.session_state:
     st.session_state.explore_last_loaded_path = None
     st.session_state.explore_last_loaded_name = None
 
-st.title("\U0001F692 NYC Fire Station Analysis \U0001F5FD")
+st.title("\U0001F692 NYC Fire Station Spatial-Temporal Analysis \U0001F5FD")
 
 st.sidebar.header("Select View")
 selected_page = st.sidebar.selectbox(
@@ -398,5 +396,24 @@ elif selected_page == "Visualizations":
         st.divider()
 
         st.subheader("Power BI Dashboard")
+        st.info("""
+        Below is a zip file with our PowerBI content as well as instructions for using the custom dashboard.
 
-        st.info("Below is a zip file with our PowerBI content as well as instructions for using the custom dashboard.\n\n\n\nWe're excited to include this content as an extension of what we learned using Tableau in HW1:")
+
+        We're excited to include this content as an extension of what we learned using Tableau in HW1:
+        """)
+
+        if os.path.exists(PBI_ZIP_PATH):
+            try:
+                with open(PBI_ZIP_PATH, "rb") as fp:
+                    btn = st.download_button(
+                        label="Download Power BI Content (.zip)",
+                        data=fp,
+                        file_name="Team_139_PBI_Visualization.zip",
+                        mime="application/zip"
+                    )
+            except Exception as e:
+                st.error(f"could not read zip file for download: {e}")
+        else:
+            st.warning(f"power bi zip file not found: {PBI_ZIP_PATH}")
+
