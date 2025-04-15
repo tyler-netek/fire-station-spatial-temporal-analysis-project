@@ -19,7 +19,7 @@ PREDICTION_DATA_DIR = os.path.join(".", "Prediction", "Data")
 PREDICTION_MODEL_DIR= os.path.join(".", "Prediction", "Models")
 VISUALIZATIONS_PATH = os.path.join(".", "Visualizations")
 WAVELET_FEATURES_FILE = os.path.join(".", "Prediction", "wavelet_features.csv")
-FIRE_INCIDENCE_FILE = os.path.join(".", "Final_Fire_Incidence_Data_with_PopDensity.csv")
+FIRE_INCIDENCE_FILE = os.path.join("Misc", "Final_Fire_Incidence_Data_with_PopDensity.csv")
 ACS_DATA_FILE= os.path.join(".", "ACSST5Y2023.S1901-Data.csv")
 POTENTIAL_LOC_FILE = os.path.join(OPTIMIZATION_DATA_DIR, "Potential_location.csv")
 OPTIMAL_LOC_FILE = os.path.join(OPTIMIZATION_DATA_DIR, "optimal_ga_locations.csv")
@@ -397,29 +397,6 @@ elif selected_page == "Visualizations":
 
         st.divider()
 
-        st.subheader("Key Dashboards (from Power BI)")
-        st.write("static representations of visuals originally created in power bi.")
+        st.subheader("Power BI Dashboard")
 
-        img_col1, img_col2 = st.columns(2)
-
-        with img_col1:
-            if os.path.exists( PBI_IMG1_PATH ):
-                st.image( PBI_IMG1_PATH, caption="dashboard overview (screenshot)", use_column_width=True)
-            else:
-                st.warning(f"image file not found: `{PBI_IMG1_PATH}`. (add screenshot).")
-
-        with img_col2:
-            if os.path.exists( PBI_IMG2_PATH ):
-                st.image( PBI_IMG2_PATH, caption="risk map visual (screenshot)", use_column_width=True)
-            else:
-                st.warning(f"image file not found: `{PBI_IMG2_PATH}`. (add screenshot).")
-
-
-        if os.path.exists( PBI_IMG3_PATH ):
-             st.image( PBI_IMG3_PATH, caption="trends chart (screenshot)", use_column_width=True)
-        else:
-             st.warning(f"image file not found: `{PBI_IMG3_PATH}`. (add screenshot).")
-
-        st.divider()
-        st.subheader("Add Other Custom Visualizations")
-        st.info("this section can be further developed with additional plots relevant to the project.")
+        st.info("Below is a zip file with our PowerBI content as well as instructions for using the custom dashboard.\n\n\n\nWe're excited to include this content as an extension of what we learned using Tableau in HW1:")
