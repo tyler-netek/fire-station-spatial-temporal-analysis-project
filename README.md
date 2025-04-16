@@ -1,6 +1,7 @@
 # NYC Fire Station Spatial-Temporal Analysis - CSE6242 Project
 
 **Team:** Team 139
+
 **Members:** Tyler, Vinuka, Harshitha, Rishi, Madeleine, Kevin
 
 ## Project Overview
