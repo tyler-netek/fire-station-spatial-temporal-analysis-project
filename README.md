@@ -9,6 +9,8 @@ This project analyzed NYC fire incidents using spatio-temporal data. Key objecti
 
 Application built with [Streamlit](https://docs.streamlit.io)
 
+---
+
 ## Live Application Demo
 
 The interactive dashboard is deployed on Render:
@@ -19,6 +21,10 @@ The interactive dashboard is deployed on Render:
 
 *Note: The free tier [Render](https://render.com) (AWS/GCP/Azure alternative) instance may take ~30-60 seconds to wake up if inactive. This ensures that we do not get charged, without having to set AWS Cloudwatch Alarms or a similar option on GCP/Azure.*
 
+#### **If you simply want to use the deployed app, there is no need to continue below here, the rest is for local setup.**
+
+---
+
 ## Running Locally
 
 Follow these steps precisely to run the Streamlit application on your local machine.
@@ -26,13 +32,12 @@ Follow these steps precisely to run the Streamlit application on your local mach
 **1. Prerequisites:**
    * Python 3.11 (Ensure it's in your system's PATH)
    * Pipenv (`pip install pipenv`)
-   * System libraries for geospatial packages (GDAL, PROJ, GEOS) might be needed if step 3 fails. Check `geopandas` / `cartopy` docs for your OS.
 
 **2. Setup Project:**
    ```bash
    git clone [https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git](https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git)
    cd fire-station-spatial-temporal-analysis-project
-
+   pipenv shell
    pipenv install
    ```
 
@@ -41,10 +46,10 @@ Follow these steps precisely to run the Streamlit application on your local mach
    * **Activate Environment:** `pipenv shell`
    * **Generate GA Results:**
       * Run: `python Optimization/Genetic_algo_final.py`
-      * *Ensure this script is modified to save its output DataFrame to:* `Optimization/Data/optimal_ga_locations.csv`
+      * *Ensure this script is modified to save its output DataFrame to:* `Optimization/Data/optimal_ga_locations.csv` (This might potentially already exist, but putting here in case it doesn't.)
    * **Generate KDE/K-Medoids Results:**
       * Run the `Optimization/KDE+ New Fire Station Locations(K Medoids).ipynb` notebook (e.g., using `jupyter lab`).
-      * *Verify paths inside the notebook. Ensure it reads required inputs (like PLUTO) and saves its outputs:* `Optimization/Data/Potential_location.csv` and `Optimization/Data/kde_by_zipcode.csv`.
+      * *Verify paths inside the notebook. Ensure it reads required inputs (like PLUTO) and saves its outputs:* `Optimization/Data/Potential_location.csv` and `Optimization/Data/kde_by_zipcode.csv`. (Might already exist, please check.)
    * **Generate Prediction Output File:**
       * Run the `Prediction/Predict Fire Incidents.ipynb` notebook.
       * *Ensure it saves its output to:* `Prediction/Data/fire_incident_prediction_output.csv`.
