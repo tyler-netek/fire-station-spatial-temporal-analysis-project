@@ -73,7 +73,6 @@ Also be sure that your virtual environment is using Python 3.11, because that is
 
 **4. Run the Streamlit App:**
    ```bash
-   pipenv shell
    streamlit run app.py
    ```
    * Access the application in your browser (usually `http://localhost:8501` by convention). You will see a message like the below in your terminal:
