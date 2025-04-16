@@ -76,6 +76,12 @@ Also be sure that your virtual environment is using Python 3.11, because that is
    pipenv shell
    streamlit run app.py
    ```
-   * Access the application in your browser (usually `http://localhost:8501`).
+   * Access the application in your browser (usually `http://localhost:8501` by convention). You will see a message like the below in your terminal:
+
+   ```
+   You can now view your Streamlit app in your browser.
+
+   Local URL: http://localhost:8501
+   ```
 
 ---
