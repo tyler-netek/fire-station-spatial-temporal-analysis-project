@@ -36,7 +36,7 @@ Follow these steps precisely to run the Streamlit application on your local mach
 
 **2. Setup Project:**
    ```bash
-   git clone [https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git](https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git)
+   git clone https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git
    cd fire-station-spatial-temporal-analysis-project
    pipenv install
    pipenv shell
