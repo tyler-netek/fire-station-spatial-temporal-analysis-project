@@ -146,7 +146,7 @@ st.title("\U0001F692 NYC Fire Station Spatial-Temporal Analysis \U0001F5FD")
 st.sidebar.header("Select View")
 selected_page = st.sidebar.selectbox(
     "Section:",
-    ["Welcome", "Explore Data", "Predict Risk", "Optimization", "Visualizations"]
+    ["Welcome", "Explore Data", "Prediction", "Optimization", "Visualizations"]
 )
 st.sidebar.info(f"Last Refresh: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -212,7 +212,7 @@ elif selected_page == "Explore Data":
         st.caption(f"file not found or load failed: `{st.session_state.explore_last_loaded_path}`")
 
 
-elif selected_page == "Predict Risk":
+elif selected_page == "Prediction":
     st.header("Predict Fire Incident Probability")
 
     if not st.session_state.predict_loaded:
@@ -237,7 +237,7 @@ elif selected_page == "Predict Risk":
             else:
                 st.error("failed to load necessary models or wavelet data for prediction.")
 
-    if selected_page == "Predict Risk" and st.session_state.predict_loaded:
+    if selected_page == "Prediction" and st.session_state.predict_loaded:
         st.markdown("Select a time and location to estimate the probability of a fire incident within that 4-hour window, based on the trained logistic models using wavelet features.")
 
         wavelet_unique_to_use = st.session_state.get('wavelet_unique')
