@@ -47,7 +47,7 @@ Follow these steps precisely to run the Streamlit application on your local mach
         * Run the `Prediction/fire_incident_prediction_model_development.ipynb` notebook (at least partially).
         * *Ensure it saves the merged 'df' DataFrame to:* `Prediction/Data/merged_dnn_input_features.csv`
 
-EXECUTION
+### EXECUTION
 
 Option A: Visit the deployed site here [Deployed Site on Render](https://fire-station-spatial-temporal-analysis.onrender.com/)
 
