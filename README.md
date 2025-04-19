@@ -1,138 +1,57 @@
-# NYC Fire Station Spatial-Temporal Analysis - CSE6242 Project
+### Team 139
 
-**Team:** Team 139
+#### Members: Tyler, Vinuka, Harshitha, Rishi, Madeleine, Kevin
 
-**Members:** Tyler, Vinuka, Harshitha, Rishi, Madeleine, Kevin
+### DESCRIPTION
 
-## Project Overview
+This project analyzes NYC fire incidents using spatio-temporal data. Key objectives included predicting fire incident probability using wavelet features and optimizing potential new fire station locations using KDE and Genetic Algorithms. This repository contains the analysis code, notebooks, and an interactive Streamlit application to display results. Application built with [Streamlit](https://docs.streamlit.io)
 
-This project analyzed NYC fire incidents using spatio-temporal data. Key objectives included predicting fire incident probability using wavelet features and optimizing potential new fire station locations using KDE and Genetic Algorithms. This repository contains the analysis code, notebooks, and an interactive Streamlit application to display results.
-
-Application built with [Streamlit](https://docs.streamlit.io)
-
----
-
-## Live Application Demo
-
-The interactive dashboard is deployed on Render:
-
-**➡️ [https://fire-station-spatial-temporal-analysis.onrender.com](https://fire-station-spatial-temporal-analysis.onrender.com)**
-
-### Important Info [DO NOT SKIP THIS SECTION]
-
-*Note: The free tier [Render](https://render.com) (AWS/GCP/Azure alternative) instance may take ~30-60 seconds to wake up if inactive. This ensures that we do not get charged, without having to set AWS Cloudwatch Alarms or a similar option on GCP/Azure.*
-
-#### **If you simply want to use the deployed app, there is no need to continue below here, the rest is for local setup.**
-
----
-
-## Running Locally
+### INSTALLATION
 
 Follow these steps precisely to run the Streamlit application on your local machine.
 
-**1. Prerequisites:**
-   * Python 3.11 (Ensure it's in your system's PATH)
-   * Pipenv (`pip install pipenv`)
+1.  **Prerequisites:**
+    * Python 3.11 (Ensure it's in your system's PATH)
+    * Pipenv (`pip install pipenv`)
 
-**2. Setup Project:**
-   ```bash
-   git clone https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git
-   cd fire-station-spatial-temporal-analysis-project
-   pipenv install
-   pipenv shell
-   ```
-   ---
-   **NOTE for context of the commands we're using above:**
-   
-The `Pipfile` in the root of our repository specifies the main Python packages (i.e. `Streamlit`, `Pandas`, etc.) and the Python version this project requires so that all of the specified dependencies and their versions align to be used without conflict. Based on that, `pipenv` automatically generates the `Pipfile.lock` file, which records the exact versions of all installed libraries (including dependencies of dependencies), ensuring everyone builds the identical software environment both locally and for the Render deployment to use for our production application that is accessible at the URL earlier in this document.
+2.  **Setup Project:**
+    ```bash
+    git clone https://github.com/tyler-netek/fire-station-spatial-temporal-analysis-project.git
+    cd fire-station-spatial-temporal-analysis-project
+    pipenv install
+    pipenv shell
+    ```
 
-Since the repository includes a `Pipfile.lock`, the command `pipenv install` simply installs the exact pre-defined package versions listed in the lock file into your local virual environment, guaranteeing reproducibility. After that, use `pipenv shell` to activate that specific environment so project commands i.e. `streamlit run app.py` use the correct dependencies. If `pipenv install` then `pipenv shell` were not used first, `streamlit run app.py` would not work as `streamlit` would not have yet been installed.
+ - **NOTE for context of the commands we're using above:**
 
-If for some reason there is still an issue with the library, we've provided error handling, and the interpreter will also complain and point out which library is missing. You can then manually do `pip install <missing library>`.
+   - The `Pipfile` in the root of our repository specifies the main Python packages (i.e. `Streamlit`, `Pandas`, etc.) and the Python version this project requires so that all of the specified dependencies and their versions align to be used without conflict. Based on that, `pipenv` automatically generates the `Pipfile.lock` file, which records the exact versions of all installed libraries (including dependencies of dependencies), ensuring everyone builds the identical software environment both locally and for the Render deployment to use for our production application that is accessible at the URL earlier in this document.
 
-Also be sure that your virtual environment is using Python 3.11, because that is the only version that is guaranteed to have no dependency conflicts with all of the libraries and their specified versions.
+   - Since the repository includes a `Pipfile.lock`, the command `pipenv install` simply installs the exact pre-defined package versions listed in the lock file into your local virtual environment, guaranteeing reproducibility. After that, use `pipenv shell` to activate that specific environment so project commands i.e. `streamlit run app.py` use the correct dependencies. If `pipenv install` then `pipenv shell` were not used first, `streamlit run app.py` would not work as `streamlit` would not have yet been installed.
 
----
+   - If for some reason there is still an issue with the library, we've provided error handling, and the interpreter will also complain and point out which library is missing. You can then manually do `pip install <missing library>`.
 
-**3. Offline Analysis Steps (Required for Full App Functionality):**
-   The Streamlit app displays results generated by the following scripts/notebooks. Run these **before** launching the app locally. Execute commands from the project root directory within the virtual environment.
-   * **Generate GA Results:**
-      * Run: `python Optimization/Genetic_algo_final.py`
-      * *Ensure this script is modified to save its output DataFrame to:* `Optimization/Data/optimal_ga_locations.csv` (This might potentially already exist, but putting here in case it doesn't.)
-   * **Generate KDE/K-Medoids Results:**
-      * Run the `Optimization/KDE+ New Fire Station Locations(K Medoids).ipynb` notebook (e.g., using `jupyter lab`).
-      * *Verify paths inside the notebook. Ensure it reads required inputs (like PLUTO) and saves its outputs:* `Optimization/Data/Potential_location.csv` and `Optimization/Data/kde_by_zipcode.csv`. (Might already exist, please check.)
-   * **Generate Prediction Output File:**
-      * Run the `Prediction/Predict Fire Incidents.ipynb` notebook.
-      * *Ensure it saves its output to:* `Prediction/Data/fire_incident_prediction_output.csv`.
-   * **Generate Merged DNN Features File:**
-      * Run the `Prediction/fire_incident_prediction_model_development.ipynb` notebook (at least partially).
-      * *Ensure it saves the merged 'df' DataFrame to:* `Prediction/Data/merged_dnn_input_features.csv`.
-   * **Exit Environment:** `exit`
+   - Also be sure that your virtual environment is using Python 3.11, because that is the only version that is guaranteed to have no dependency conflicts with all of the libraries and their specified versions.
 
-**4. Run the Streamlit App:**
-   ```bash
-   streamlit run app.py
-   ```
-   * Access the application in your browser (usually `http://localhost:8501` by convention). You will see a message like the below in your terminal:
+3.  **Offline Analysis Steps (Only if in the final version these files are missing in the Streamlit App):**
+    The Streamlit app displays results generated by the following scripts/notebooks. Run these **before** launching the app locally. Execute commands from the project root directory within the virtual environment (`pipenv shell`).
+    * **Generate GA Results:**
+        * Run: `python Optimization/Genetic_algo_final.py`
+        * *Ensure this script is modified to save its output DataFrame to:* `Optimization/Data/optimal_ga_locations.csv` (This might potentially already exist, but putting here in case it doesn't.)
+    * **Generate KDE/K-Medoids Results:**
+        * Run the `Optimization/KDE+ New Fire Station Locations(K Medoids).ipynb` notebook (e.g., using `jupyter lab`).
+        * *Verify paths inside the notebook. Ensure it reads required inputs (like PLUTO) and saves its outputs:* `Optimization/Data/Potential_location.csv` and `Optimization/Data/kde_by_zipcode.csv`. (Might already exist, please check.)
+    * **Generate Prediction Output File:**
+        * Run the `Prediction/Predict Fire Incidents.ipynb` notebook
+        * *Ensure it saves its output to:* `Prediction/Data/fire_incident_prediction_output.csv`.
+    * **Generate Merged DNN Features File:**
+        * Run the `Prediction/fire_incident_prediction_model_development.ipynb` notebook (at least partially).
+        * *Ensure it saves the merged 'df' DataFrame to:* `Prediction/Data/merged_dnn_input_features.csv`
 
-   ```
-   You can now view your Streamlit app in your browser.
+EXECUTION
 
-   Local URL: http://localhost:8501
-   ```
+Option A: Visit the deployed site here [Deployed Site on Render](https://fire-station-spatial-temporal-analysis.onrender.com/)
 
----
-Running the PowerBI Dashboard 
-=========================
+Option B: After completing the Installation steps (including running the offline analysis scripts/notebooks if needed), run the Streamlit app demo using the following command from the project root directory, inside the activated virtual environment (`pipenv shell`):
 
-**1. Extract the `.zip` file to a local directory.** For example, C:/Users/YourName/Documents/FireStationProject/
-
-**2. Make sure the `/data/` folder stays in the SAME directory as the `.pbix` file:**
-
-         Directory structure:
-- /FireStationProject/
-  - Visualization_Team_139.pbix
-  - /data/
-    - Potential_location.csv
-    - all_zip_full_buffer_coverage_with_overlap.csv
-    - Merged_Risk_PopDensity_SquareKilometers.csv
-    - ... (other data files)
-
-
-**3. Open `Visualization_Team_139.pbix` in Power BI Desktop**
-
-**4. Power BI may prompt you to enable Python visuals — click ENABLE**
-
-**5. Set up your Python environment if needed:**
-   - Go to: File → Options and settings → Options → Python scripting
-   - Set the correct Python path (e.g., from Anaconda or your system Python) (e.g., `C:/Users/YourName/anaconda3/python.exe`)
-   - In case you encounter an error, follow these steps to ensure all required libraries are installed: 
-	  1. Note the exact path listed in the Python settings (e.g., `C:/Users/YourName/anaconda3/python.exe`)
-	  2. Open **Command Prompt** (or Terminal)
-	  3. Navigate to the directory where Python is installed:
-   	
-	         ```bash
-   	         cd C:/Users/YourName/anaconda3
-             ```
-
-     4. Run the following command to install the necessary libraries:
-	
-        	```bash
-           	pip install pandas numpy matplotlib plotly pillow geopandas shapely deap
-           	```
-
-	    This ensures all libraries are available to the Python visual inside Power BI.
-
-**6. Use the slicers on the right side of the report to adjust:**
-   - Low / Medium / High coverage weightages
-   - Number of fire station locations
-
-**7. Wait ~4–5 minutes for the Python optimization script to run.**
-   - The output map will display the selected optimal locations in a browser window.
-   - A confirmation message will also be shown in Power BI.
-
-
-
-
----
+```bash
+streamlit run app.py
