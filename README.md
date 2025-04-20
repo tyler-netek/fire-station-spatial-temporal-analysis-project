@@ -6,6 +6,10 @@
 
 This project analyzes NYC fire incidents using spatio-temporal data. Key objectives included predicting fire incident probability using wavelet features and optimizing potential new fire station locations using KDE and Genetic Algorithms. This repository contains the analysis code, notebooks, and an interactive Streamlit application to display results. Application built with [Streamlit](https://docs.streamlit.io)
 
+The interactive dashboard is deployed on Render: 
+
+**➡️ [https://fire-station-spatial-temporal-analysis.onrender.com](https://fire-station-spatial-temporal-analysis.onrender.com)**
+
 ### INSTALLATION
 
 Follow these steps precisely to run the Streamlit application on your local machine.
