@@ -47,6 +47,63 @@ Follow these steps precisely to run the Streamlit application on your local mach
         * Run the `Prediction/fire_incident_prediction_model_development.ipynb` notebook (at least partially).
         * *Ensure it saves the merged 'df' DataFrame to:* `Prediction/Data/merged_dnn_input_features.csv`
 
+---
+
+Running the PowerBI Dashboard
+=========================
+
+**1. Extract the `.zip` file to a local directory.** For example, C:/Users/YourName/Documents/FireStationProject/
+
+**2. Make sure the `/data/` folder stays in the SAME directory as the `.pbix` file:**
+
+         Directory structure:
+- /FireStationProject/
+    - Visualization_Team_139.pbix
+    - /data/
+        - Potential_location.csv
+        - all_zip_full_buffer_coverage_with_overlap.csv
+        - Merged_Risk_PopDensity_SquareKilometers.csv
+        - ... (other data files)
+
+
+**3. Open `Visualization_Team_139.pbix` in Power BI Desktop**
+
+**4. Power BI may prompt you to enable Python visuals — click ENABLE**
+
+**5. Set up your Python environment if needed:**
+- Go to: File → Options and settings → Options → Python scripting
+- Set the correct Python path (e.g., from Anaconda or your system Python) (e.g., `C:/Users/YourName/anaconda3/python.exe`)
+- In case you encounter an error, follow these steps to ensure all required libraries are installed:
+    1. Note the exact path listed in the Python settings (e.g., `C:/Users/YourName/anaconda3/python.exe`)
+    2. Open **Command Prompt** (or Terminal)
+    3. Navigate to the directory where Python is installed:
+
+           ```bash
+           cd C:/Users/YourName/anaconda3
+           ```
+
+    4. Run the following command to install the necessary libraries:
+
+       	```bash
+          	pip install pandas numpy matplotlib plotly pillow geopandas shapely deap
+          	```
+
+       This ensures all libraries are available to the Python visual inside Power BI.
+
+**6. Use the slicers on the right side of the report to adjust:**
+- Low / Medium / High coverage weightages
+- Number of fire station locations
+
+**7. Wait ~4–5 minutes for the Python optimization script to run.**
+- The output map will display the selected optimal locations in a browser window.
+- A confirmation message will also be shown in Power BI.
+
+
+
+
+---
+
+
 ### EXECUTION
 
 Option A: Visit the deployed site here [Deployed Site on Render](https://fire-station-spatial-temporal-analysis.onrender.com/)
